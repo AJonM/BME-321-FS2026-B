@@ -1,0 +1,74 @@
+---
+title: "Interim test - version B"
+author: "Anthony"
+date: today
+toc: true
+format:
+  html:
+    embed-resources: true # Quarto HTML document references external files (CSS, JS, images, fonts) as separate files 
+    number-sections: true # Automatically adds numbered headings to your document
+    code-fold: true #hide or show the code
+editor: visual
+editor_options:
+  chunk_output_type: console #the ouptput is in the console instead of in the document
+execute:
+  warning: false
+  message: false
+---
+
+# Prepare the session
+
+```{r}
+#| label: prepare-session
+
+# Load packages
+  library(pastecs)
+  library(ggpubr); theme_set(theme_bw())
+  library(GGally)
+  library(performance)
+  library(MuMIn)
+  library(ggeffects)
+  library(knitr) 
+
+asthmaTherapy <- read.csv(here::here("BME-321-FS2026-B", "data", "processed", "lung-function.csv"))
+View(asthmaTherapy)
+```
+
+## Explore data
+
+### Numerically
+
+```{r}
+#| label: tbl-explore-data
+#| tbl-cap: "Descriptive statistics for the variables of interest."
+#| echo: false
+
+# Numerically
+ sum_stats<-
+   stat.desc(asthmaTherapy)
+ 
+ kable(sum_stats, digits= 1)
+```
+
+### Graphically
+
+```{r}
+#| label: fig-scatterplot
+#| fig-cap: "Scatterplopt matrix of the Therapy data."
+#| output: false # i won't render the output
+#| echo: false
+
+# Scatterplot matrix
+ggpairs(asthmaTherapy)
+ 
+```
+
+```{r}
+ggarrange(
+  ggplot(asthmaTherapy, aes(x = treatment_group, y = fev1_improvement))+
+    geom_point(aes(colour = smoking_status, size = age)),
+  ggplot(asthmaTherapy, aes(x = baseline_fev1, y = fev1_improvement))+
+    geom_point(aes(colour = smoking_status, size = age))
+)
+```
+
