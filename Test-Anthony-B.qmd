@@ -114,5 +114,39 @@ kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
 check_model(mod.02)
 ```
 
+## Results interpretation
 
+### Numerically 
+
+```{r}
+  Anova(mod.02)
+  summary(mod.02)
+```
+
+### Graphicallly
+
+```{r}
+#| label: fig-plot
+#| fig-cap: "Raw data and model predictions to visualize the relationship"
+#| echo: false
+#| output: true
+
+  (pred.baseline<- predict_response(mod.01, "baseline_fev1"))
+  (pred.age<- predict_response(mod.01, "age"))
+
+
+ggarrange(
+  ggplot(pred.baseline, aes(x, predicted))+
+    geom_point(data= asthmaTherapy, aes(x= baseline_fev1, y=fev1_improvement, colour = smoking_status))+
+      labs(y="Improvement", x= expression("baseline (liters)"))+
+    geom_line(),
+  
+  ggplot(pred.age, aes(x, predicted))+
+    geom_point(data= asthmaTherapy, aes(x= age, y=fev1_improvement, colour = smoking_status))+
+    geom_line()+
+      labs(x= "age", y="improvement")
+)
+```
+
+  
 
