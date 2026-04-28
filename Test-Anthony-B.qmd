@@ -34,7 +34,7 @@ asthmaTherapy <- read.csv(here::here("BME-321-FS2026-B", "data", "processed", "l
 View(asthmaTherapy)
 ```
 
-## Hypotheses:
+## Hypotheses
 
 - ICS-X leads to greater improvement in FEV₁
 - Higher baseline FEV₁ is associated with less room for improvement
@@ -47,8 +47,8 @@ View(asthmaTherapy)
 
 ```{r}
 #| label: tbl-explore-data
-#| tbl-cap: "Descriptive statistics for the variables of interest."
-#| echo: false
+#| include: true
+#| tbl-cap: Descriptive statistics for the variables of interest.
 
 # Numerically
  sum_stats<-
@@ -57,13 +57,17 @@ View(asthmaTherapy)
  kable(sum_stats, digits= 1)
 ```
 
+The raw data from @tbl-explore-data, doesn't show any improbable value
+
 ### Graphically
 
 ```{r}
 #| label: fig-scatterplot
-#| fig-cap: "Scatterplopt matrix of the Therapy data."
-#| output: false # i won't render the output
-#| echo: false
+#| eval: false
+#| warning: false
+#| fig-cap: Scatterplopt matrix of the Therapy data.
+#| include: false
+#| output: false
 
 # Scatterplot matrix
 ggpairs(asthmaTherapy)
@@ -98,8 +102,7 @@ ggarrange(
 
 By looking at the preliminary raw graphs @fig-raw-data , we can already observe most of the hypotheses are tendentially valid, besides the smoker, who exhibit an increased treatment response.
 
-\
-# Modelling
+## Modelling
 
 ### Finding the best model
 
@@ -107,7 +110,7 @@ By looking at the preliminary raw graphs @fig-raw-data , we can already observe 
 #| label: tbl-linear-model
 #| tbl-cap: "Comparison of the models"
 #| echo: false
-#| 
+
   mod.00<- lm(fev1_improvement~ 1, asthmaTherapy)
   mod.01<- lm(fev1_improvement~ age + baseline_fev1 + treatment_group + smoking_status, asthmaTherapy)
   mod.02<- lm(fev1_improvement~ age * baseline_fev1 * treatment_group * smoking_status, asthmaTherapy)
@@ -116,7 +119,7 @@ kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
 ```
 
 ```{r}
-
+#| output: false
   anova(mod.00, mod.01, mod.02)                                 # F-test
   compare_performance(mod.00, mod.01, mod.02)    
 ```
@@ -125,40 +128,65 @@ kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
 #| label: fig-diagnostic-plots
 #| fig-cap: "Model diagnostics: these look pretty good "
 #| echo: false
+#| output: false
 # Validate model
-check_model(mod.02)
+check_model(mod.01)
 ```
+
+Based on the AIC values from @tbl-linear-model, mod.01 seems to be the most appropriate one to work with 
 
 ## Results interpretation
 
 ### Numerically
 
 ```{r}
-  Anova(mod.02)
+#| output: false
+#| 
+  anova(mod.02)
   summary(mod.02)
 ```
 
 ### Graphicallly
 
 ```{r}
-#| label: fig-plot
-#| fig-cap: "Raw data and model predictions to visualize the relationship"
+
+#| label: interpret-objects
 #| echo: false
-#| output: true
+#| output: false
 
   (pred.baseline<- predict_response(mod.01, "baseline_fev1"))
   (pred.age<- predict_response(mod.01, "age"))
 
 
-ggarrange(
+pred.plot<-ggarrange(
   ggplot(pred.baseline, aes(x, predicted))+
     geom_point(data= asthmaTherapy, aes(x= baseline_fev1, y=fev1_improvement, colour = smoking_status))+
       labs(y="Improvement", x= expression("baseline (liters)"))+
-    geom_line(),
+    geom_line()+
+    coord_cartesian(ylim= c(-0.5, 1), xlim = c(0, 5)),
   
   ggplot(pred.age, aes(x, predicted))+
     geom_point(data= asthmaTherapy, aes(x= age, y=fev1_improvement, colour = smoking_status))+
     geom_line()+
-      labs(x= "age", y="improvement")
+      labs(x= "age", y="improvement")+
+    coord_cartesian(ylim= c(-0.5, 1), xlim = c(15,70))
 )
 ```
+
+```{r}
+#| label: fig-plot
+#| fig-cap: "Raw data and model predictions to visualize the relationship"
+
+pred.plot
+```
+
+A linear model 
+
+```{r}
+#| label: session-info
+#| warning: false
+#| include: false
+
+sessionInfo()
+```
+
