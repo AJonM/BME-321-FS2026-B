@@ -1,3 +1,0 @@
-project:
-  output-dir: output       # where rendered files go
-  execute-dir: project     # anchor paths to project root
