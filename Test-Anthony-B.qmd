@@ -66,9 +66,21 @@ ggpairs(asthmaTherapy)
 ```{r}
 ggarrange(
   ggplot(asthmaTherapy, aes(x = treatment_group, y = fev1_improvement))+
-    geom_point(aes(colour = smoking_status, size = age)),
+    geom_point()+
+   # geom_point(aes(colour = smoking_status, size = age))+
+     geom_smooth(method= lm) ,
   ggplot(asthmaTherapy, aes(x = baseline_fev1, y = fev1_improvement))+
-    geom_point(aes(colour = smoking_status, size = age))
+        geom_point()+
+   # geom_point(aes(colour = smoking_status, size = age))+
+     geom_smooth(method= lm) ,
+    ggplot(asthmaTherapy, aes(x = age, y = fev1_improvement))+
+        geom_point()+
+   # geom_point(aes(colour = smoking_status, size = age))+
+     geom_smooth(method= lm) ,
+    ggplot(asthmaTherapy, aes(x =smoking_status, y = fev1_improvement))+
+        geom_point()+
+   # geom_point(aes(colour = smoking_status, size = age))+
+     geom_smooth(method= lm)
 )
 ```
 
@@ -88,6 +100,19 @@ ggarrange(
 kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
 ```
 
+```{r}
+
+  anova(mod.00, mod.01, mod.02)                                 # F-test
+  compare_performance(mod.00, mod.01, mod.02)    
+```
+
+```{r}
+#| label: fig-diagnostic-plots
+#| fig-cap: "Model diagnostics: these look pretty good "
+#| echo: false
+# Validate model
+check_model(mod.02)
+```
 
 
 
