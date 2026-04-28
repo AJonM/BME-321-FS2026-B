@@ -133,7 +133,7 @@ kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
 check_model(mod.01)
 ```
 
-Based on the AIC values from @tbl-linear-model, mod.01 seems to be the most appropriate one to work with 
+Based on the AIC values from @tbl-linear-model, mod.01 seems to be the most appropriate one to work with
 
 ## Results interpretation
 
@@ -156,6 +156,12 @@ Based on the AIC values from @tbl-linear-model, mod.01 seems to be the most appr
 
   (pred.baseline<- predict_response(mod.01, "baseline_fev1"))
   (pred.age<- predict_response(mod.01, "age"))
+
+## Coefficients, SE, z and p -----
+  coef.table<- round(summary(mod.01)$coefficients, 3)
+
+## Approximate R2 -----
+  r.2<- round(attributes(r.squaredLR(mod.01))$adj.r.squared, 3)  
 
 
 pred.plot<-ggarrange(
@@ -180,7 +186,15 @@ pred.plot<-ggarrange(
 pred.plot
 ```
 
-A linear model 
+```{r}
+#| label: tbl-lm
+#| tbl-cap: table with coefficinents
+
+    kable(coef.table)
+
+```
+
+The selected linear model showed the following R squared value: *R*^2^= `r r.2`
 
 ```{r}
 #| label: session-info
@@ -189,4 +203,3 @@ A linear model
 
 sessionInfo()
 ```
-
