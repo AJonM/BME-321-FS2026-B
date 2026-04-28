@@ -34,6 +34,13 @@ asthmaTherapy <- read.csv(here::here("BME-321-FS2026-B", "data", "processed", "l
 View(asthmaTherapy)
 ```
 
+## Hypotheses:
+
+- ICS-X leads to greater improvement in FEV₁
+- Higher baseline FEV₁ is associated with less room for improvement
+- Smokers exhibit a reduced treatment response
+- A negative Age effect on improvement
+
 ## Explore data
 
 ### Numerically
@@ -64,6 +71,11 @@ ggpairs(asthmaTherapy)
 ```
 
 ```{r}
+#| label: fig-raw-data
+#| fig-cap: "The improvement plotted against the four variables a)treatment group, b) baseline, c) age, d) smoking status"
+#| fig-width: !expr 16/2.54
+#| fig-height: !expr 9/2.54
+#| code-fold: true #by default the code chunk is folded
 ggarrange(
   ggplot(asthmaTherapy, aes(x = treatment_group, y = fev1_improvement))+
     geom_point()+
@@ -84,7 +96,10 @@ ggarrange(
 )
 ```
 
-## Modelling
+By looking at the preliminary raw graphs @fig-raw-data , we can already observe most of the hypotheses are tendentially valid, besides the smoker, who exhibit an increased treatment response.
+
+\
+# Modelling
 
 ### Finding the best model
 
@@ -116,7 +131,7 @@ check_model(mod.02)
 
 ## Results interpretation
 
-### Numerically 
+### Numerically
 
 ```{r}
   Anova(mod.02)
@@ -147,6 +162,3 @@ ggarrange(
       labs(x= "age", y="improvement")
 )
 ```
-
-  
-
