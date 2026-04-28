@@ -72,3 +72,22 @@ ggarrange(
 )
 ```
 
+## Modelling
+
+### Finding the best model
+
+```{r}
+#| label: tbl-linear-model
+#| tbl-cap: "Comparison of the models"
+#| echo: false
+#| 
+  mod.00<- lm(fev1_improvement~ 1, asthmaTherapy)
+  mod.01<- lm(fev1_improvement~ age + baseline_fev1 + treatment_group + smoking_status, asthmaTherapy)
+  mod.02<- lm(fev1_improvement~ age * baseline_fev1 * treatment_group * smoking_status, asthmaTherapy)
+  
+kable(compare_performance(mod.00, mod.01, mod.02), digits = 3)
+```
+
+
+
+
